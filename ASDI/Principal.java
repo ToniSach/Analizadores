@@ -32,7 +32,7 @@ public class Principal {
             System.out.println(token);
         }*/
 
-        Parser parser = new ASA(tokens);
+        Parser parser = new ASDR(tokens);
         parser.parse();
     }
 
