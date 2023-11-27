@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class ASDR implements Parser{
+public class ASDI implements Parser{
 
     private int i = 0;
     private boolean hayErrores = false;
@@ -8,7 +8,7 @@ public class ASDR implements Parser{
     private final List<Token> tokens;
 
 
-    public ASDR(List<Token> tokens){
+    public ASDI(List<Token> tokens){
         this.tokens = tokens;
         preanalisis = this.tokens.get(i);
     }
@@ -79,6 +79,17 @@ public class ASDR implements Parser{
         A1();
     }
 
+    // A1 -> ,A | Ɛ
+    private void A1(){
+        if(hayErrores)
+            return;
+
+        if(preanalisis.tipo == TipoToken.COMA){
+            match(TipoToken.COMA);
+            A();
+        }
+    }
+
     // A2 -> id A3
     private void A2(){
         if(hayErrores)
@@ -94,17 +105,6 @@ public class ASDR implements Parser{
         }
     }
 
-    // A1 -> ,A | Ɛ
-    private void A1(){
-        if(hayErrores)
-            return;
-
-        if(preanalisis.tipo == TipoToken.COMA){
-            match(TipoToken.COMA);
-            A();
-        }
-    }
-
     // A3 -> . id | Ɛ
     private void A3(){
         if(hayErrores)
@@ -116,6 +116,46 @@ public class ASDR implements Parser{
         }
     }
 
+    // T -> T2 T1
+    private void T(){
+        if(hayErrores)
+            return;
+
+        T2();
+        T1();
+    }
+
+    // T1 -> ,T | Ɛ
+    private void T1(){
+        if(hayErrores)
+            return;
+
+        if(preanalisis.tipo == TipoToken.COMA){
+            match(TipoToken.COMA);
+            T();
+        }
+    }
+
+    // T2 -> id T3
+    private void T2(){
+        if(hayErrores)
+            return;
+
+        if(preanalisis.tipo == TipoToken.IDENTIFICADOR){
+            match(TipoToken.IDENTIFICADOR);
+            T3();
+        }
+    }
+
+    //T3 -> id | Ɛ
+    private void T3(){
+        if(hayErrores)
+            return;
+
+        if(preanalisis.tipo == TipoToken.IDENTIFICADOR){
+            match(TipoToken.IDENTIFICADOR);
+        }
+    }
 
     private void match(TipoToken tt){
         if(preanalisis.tipo == tt){
@@ -128,5 +168,6 @@ public class ASDR implements Parser{
         }
 
     }
+
 
 }
