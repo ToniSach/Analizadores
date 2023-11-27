@@ -55,6 +55,75 @@ public class ASA implements Parser{
     }
 }
 
+    // P -> * | A
+    private void P(){
+        if(hayErrores)
+            return;
+
+        if(preanalisis.tipo == TipoToken.ASTERISCO){
+            match(TipoToken.ASTERISCO);
+        }
+        else if (preanalisis.tipo == TipoToken.IDENTIFICADOR) {
+            A();
+        }
+        else{
+            hayErrores = true;
+            System.out.println("Se esperaba '*' or 'identificador'");
+        }
+    }
+
+    //A -> A,A1|A1
+    private void A(){
+        if(preanalisis.tipo == TipoToken.IDENTIFICADOR){
+            A1();
+            if(preanalisis.tipo == TipoToken.COMA){
+                match(TipoToken.COMA);
+                A();
+            }
+        }
+    }
+
+    //A1 -> idA2
+    private void A1(){
+        if(preanalisis.tipo == TipoToken.IDENTIFICADOR){
+            match(TipoToken.IDENTIFICADOR);
+            A2();
+        }
+    }
+
+    //A2 ->.id|epsilon
+    private void A2(){
+        if(preanalisis.tipo == TipoToken.PUNTO){
+            match(TipoToken.PUNTO);
+            match(TipoToken.IDENTIFICADOR);
+        }
+    }
+
+    //T -> T,T1|T1
+    private void T(){
+        if(preanalisis.tipo == TipoToken.IDENTIFICADOR){
+            T1();
+            if(preanalisis.tipo == TipoToken.COMA){
+                match(TipoToken.COMA);
+                T();
+            }
+        }
+
+    } 
+
+    //T1 -> idT2
+    private void T1(){
+        if(preanalisis.tipo == TipoToken.IDENTIFICADOR){
+            match(TipoToken.IDENTIFICADOR);
+            T2();
+        }
+    }
+    //T2 -> id|epsilon
+    private void T2(){
+        if(preanalisis.tipo == TipoToken.IDENTIFICADOR){
+            match(TipoToken.IDENTIFICADOR);
+        }
+    }
 
     private void match(TipoToken tt){
         if(preanalisis.tipo == tt){
